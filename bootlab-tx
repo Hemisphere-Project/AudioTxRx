@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+#
+# usage: bootlab-tx channel:password
+#
+
+import subprocess
+import sys, time
+
+# Check args
+if len(sys.argv) < 2 or not ':' in sys.argv[1]:
+    print('usage: bootlab-tx channel:password')
+    exit(1)
+channel, password = sys.argv[1].split(':')
+
+# Prepare URL
+icecast = 'icecast://source:'+password+'@boot.telemir.fr:8000/'+channel
+
+while True:
+
+    # Detect USB audio HW
+    hw = 'none'
+    card = subprocess.run('arecord -l | grep USB | awk \'{print $2}\'', shell=True,  stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+    if card:
+        hw = card.replace(':', ',')+'0'
+
+        # Detect channels
+        ichan = 2 
+        while True:
+            test = subprocess.run('arecord -d 1 -f cd -D hw:1,0 /zz/foobar.wav -c '+str(ichan), shell=True,  stdout=subprocess.PIPE, stderr=subprocess.PIPE).stderr.decode('utf-8').strip()
+            if not 'Channels count non available' in test or ichan == 1:
+                break 
+            ichan -= 1
+        print('USB soundcard detected with '+str(ichan)+' channels')
+            
+        # Make CMD
+        command = 'ffmpeg -ac '+str(ichan)+' -f alsa -i hw:'+hw+' -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg '+icecast
+
+        try:
+            ffmpeg = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+            ffmpeg.wait()
+        except:
+            e = sys.exc_info()[0]
+            print(e)
+
+    else:
+        print('No USB audio detected...')
+
+    time.sleep(0.5)
+    subprocess.run('pkill ffmpeg', shell=True,  stdout=subprocess.PIPE)
+
+
+
+
+# ffmpeg -ac 2 -f alsa -i hw:1,0 -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg icecast://source:bootlab37*@boot.telemir.fr:8000/bootleg

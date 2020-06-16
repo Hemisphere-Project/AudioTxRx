@@ -1,0 +1,11 @@
+[Unit]
+Description=Bootlab TX
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=bootlab-tx %i
+ExecStop=/bin/pkill bootlab-tx
+
+[Install]
+WantedBy=multi-user.target
