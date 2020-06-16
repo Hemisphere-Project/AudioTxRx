@@ -19,7 +19,7 @@ url = 'http://boot.telemir.fr:8000/'+channel
 while True:
         
     # Make CMD
-    command = 'mpv --loop-playlist=force '+url+' --profile=low-latency --cache-pause=no'
+    command = 'mpv '+url+' --profile=low-latency --cache-pause=no'
 
     try:
         mpv = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -28,6 +28,7 @@ while True:
         e = sys.exc_info()[0]
         print(e)
 
+    print('Stream not reachable..')
     time.sleep(0.5)
     subprocess.run('pkill mpv', shell=True,  stdout=subprocess.PIPE)
 
