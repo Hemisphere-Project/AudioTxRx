@@ -34,7 +34,7 @@ while True:
         print('USB soundcard detected with '+str(ichan)+' channels')
             
         # Make CMD
-        command = 'ffmpeg -ac '+str(ichan)+' -f alsa -i hw:'+hw+' -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg '+icecast
+        command = 'ffmpeg -ac '+str(ichan)+' -f alsa -i hw:'+hw+' -c:a libopus -vbr on -b:a 256k -ac 2 -vn -content_type application/ogg -f ogg '+icecast
 
         try:
             ffmpeg = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
