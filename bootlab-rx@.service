@@ -1,0 +1,11 @@
+[Unit]
+Description=Bootlab RX
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=bootlab-rx %i
+ExecStop=/bin/pkill bootlab-rx
+
+[Install]
+WantedBy=multi-user.target

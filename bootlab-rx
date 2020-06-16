@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+#
+# usage: bootlab-rx channel
+#
+
+import subprocess
+import sys, time
+
+# Check args
+if len(sys.argv) < 2:
+    print('usage: bootlab-rx channel')
+    exit(1)
+channel = sys.argv[1]
+
+# Prepare URL
+url = 'http://boot.telemir.fr:8000/'+channel
+
+while True:
+        
+    # Make CMD
+    command = 'mpv --loop-playlist=force '+url+' --profile=low-latency --cache-pause=no'
+
+    try:
+        mpv = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        mpv.wait()
+    except:
+        e = sys.exc_info()[0]
+        print(e)
+
+    time.sleep(0.5)
+    subprocess.run('pkill mpv', shell=True,  stdout=subprocess.PIPE)
+
+
+
+
+# ffmpeg -ac 2 -f alsa -i hw:1,0 -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg icecast://source:bootlab37*@boot.telemir.fr:8000/bootleg

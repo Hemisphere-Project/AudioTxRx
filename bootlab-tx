@@ -27,7 +27,7 @@ while True:
         # Detect channels
         ichan = 2 
         while True:
-            test = subprocess.run('arecord -d 1 -f cd -D hw:1,0 /zz/foobar.wav -c '+str(ichan), shell=True,  stdout=subprocess.PIPE, stderr=subprocess.PIPE).stderr.decode('utf-8').strip()
+            test = subprocess.run('arecord -d 1 -f cd -D hw:'+hw+' /zz/foobar.wav -c '+str(ichan), shell=True,  stdout=subprocess.PIPE, stderr=subprocess.PIPE).stderr.decode('utf-8').strip()
             if not 'Channels count non available' in test or ichan == 1:
                 break 
             ichan -= 1
