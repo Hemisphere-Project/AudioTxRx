@@ -10,6 +10,7 @@ import sys, time
 # Check args
 if len(sys.argv) < 2 or not ':' in sys.argv[1]:
     print('usage: bootlab-tx channel:password')
+    sys.stdout.flush()
     exit(1)
 channel, password = sys.argv[1].split(':')
 
@@ -32,19 +33,25 @@ while True:
                 break 
             ichan -= 1
         print('USB soundcard detected with '+str(ichan)+' channels')
+        sys.stdout.flush()
             
         # Make CMD
-        command = 'ffmpeg -ac '+str(ichan)+' -f alsa -i hw:'+hw+' -c:a libopus -vbr on -b:a 256k -ac 2 -vn -content_type application/ogg -f ogg '+icecast
+        command = 'ffmpeg -ac '+str(ichan)+' -f alsa -i hw:'+hw+' -c:a libopus -vbr on -b:a 256k -ac 2 -vn -content_type application/ogg -f ogg '+icecast+' 2>/tmp/bootlab-tx.log'
+        print('FFMPEG cmd: '+command)
+        print('FFMPEG log: tail -f /tmp/bootlab-tx.log')
+        sys.stdout.flush()
 
         try:
-            ffmpeg = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+            ffmpeg = subprocess.Popen(command, shell=True,  stdout=subprocess.PIPE)
             ffmpeg.wait()
         except:
             e = sys.exc_info()[0]
             print(e)
+            sys.stdout.flush()
 
     else:
         print('No USB audio detected...')
+        sys.stdout.flush()
 
     time.sleep(0.5)
     subprocess.run('pkill ffmpeg', shell=True,  stdout=subprocess.PIPE)
