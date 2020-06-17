@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+#
+# usage: bootlab-rec channel
+#
+
+import subprocess
+import sys, time
+
+# Check args
+if len(sys.argv) < 2:
+    print('usage: bootlab-rec channel')
+    exit(1)
+channel = sys.argv[1]
+
+# Prepare URL
+url = 'http://boot.telemir.fr:8000/'+channel
+
+while True:
+        
+    # Make CMD
+    command = 'ffmpeg -i '+url+' /mnt/usb0/'+channel+'-'+time.strftime("%Y%m%d-%H%M%S")+'.ogg 2>/tmp/bootlab-rec.log'
+    print('FFMPEG log: tail -f /tmp/bootlab-rec.log')
+
+    try:
+        ffmpeg = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        ffmpeg.wait()
+    except:
+        e = sys.exc_info()[0]
+        print(e)
+
+    print('Stream not reachable.. or USB storage missing/full')
+    time.sleep(5)
+
+
+
+
+# ffmpeg -ac 2 -f alsa -i hw:1,0 -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg icecast://source:bootlab37*@boot.telemir.fr:8000/bootleg

@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+#
+# usage: bootlab-tunnel user:server:22:2222
+#
+
+import subprocess
+import sys, time
+
+# Check args
+if len(sys.argv) < 2 or len(sys.argv[1].split(':')) < 4:
+    print('usage: bootlab-tunnel user:server:22:2222')
+    sys.stdout.flush()
+    exit(1)
+user, server, portS, portC = sys.argv[1].split(':')
+
+
+while True:
+        
+    # Make CMD
+    command = 'ssh -N -o ServerAliveInterval=60 -o ExitOnForwardFailure=yes -R '+portC+':localhost:'+portS+' '+user+'@'+server+''
+
+    try:
+        ssh = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        ssh.wait()
+    except:
+        e = sys.exc_info()[0]
+        print(e)
+
+    print('Server not reachable.. or port already in use..')
+    time.sleep(5)
+
+
+
+
+# ffmpeg -ac 2 -f alsa -i hw:1,0 -acodec libopus -ab 256k -ac 2 -content_type application/ogg -f ogg icecast://source:bootlab37*@boot.telemir.fr:8000/bootleg

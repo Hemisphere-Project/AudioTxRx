@@ -1,0 +1,11 @@
+[Unit]
+Description=Bootlab REC
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=bootlab-rec %i
+ExecStop=/bin/pkill bootlab-rec
+
+[Install]
+WantedBy=multi-user.target

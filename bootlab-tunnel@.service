@@ -1,0 +1,11 @@
+[Unit]
+Description=Bootlab TUNNEL
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=bootlab-tunnel %i
+ExecStop=/bin/pkill bootlab-tunnel
+
+[Install]
+WantedBy=multi-user.target
