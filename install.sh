@@ -2,6 +2,7 @@
 BASEPATH="$(dirname "$(readlink -f "$0")")"
 echo "$BASEPATH"
 cd "$BASEPATH"
+pacman -S ffmpeg  --noconfirm --needed
 pip install -r requirements.txt
 ln -sf "$BASEPATH/bootlab-tx@.service" /etc/systemd/system/
 ln -sf "$BASEPATH/bootlab-tx" /usr/local/bin/
